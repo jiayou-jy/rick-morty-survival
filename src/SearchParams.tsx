@@ -1,4 +1,5 @@
 import { FunctionComponent, useState, useEffect } from "react";
+import Chart from "./Chart";
 import Results from "./Results";
 import { APIResponse, Character, Status } from "./APIResponsesTypes";
 
@@ -57,6 +58,7 @@ const SearchParams: FunctionComponent = () => {
         </label>
         <button>Submit</button>
       </form>
+      {/* <Chart data={characters} /> */}
       <Results characters={characters} />
     </div>
   );
