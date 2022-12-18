@@ -3,15 +3,25 @@ import Chart from "./Chart";
 import Results from "./Results";
 import { APIResponse, Character, Status } from "./APIResponsesTypes";
 
+interface Cache {
+  [key: string]: Character[];
+}
+
+const localCache = {} as Cache;
 const STATUS: Status[] = ["any", "alive", "dead"];
 
 const SearchParams: FunctionComponent = () => {
   const [name, setName] = useState("rick");
   const [status, setStatus] = useState("alive");
   const [characters, setCharacters] = useState<Character[]>([]);
+  const cacheKey = `${name}_${status}`;
 
   useEffect(() => {
-    requestCharacters();
+    if (localCache[cacheKey]) {
+      setCharacters(localCache[cacheKey]);
+    } else {
+      requestCharacters();
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function requestCharacters() {
@@ -32,10 +42,13 @@ const SearchParams: FunctionComponent = () => {
       results = results.concat(json.results);
       lastResInfo = json.info;
       url = lastResInfo.next;
+      console.log("fetched page " + lastResInfo.pages);
     } while (lastResInfo.next);
     
-    console.log(results);
+    console.log("done fetching");
+    localCache[cacheKey] = results || [];
     setCharacters(results);
+    console.log(localCache);
   }
 
   return (

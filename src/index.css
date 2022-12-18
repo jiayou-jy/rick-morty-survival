@@ -158,6 +158,11 @@ header {
   border: 1px solid cornflowerblue;
 }
 
+/* Chart styling */
+.bubble {
+  stroke-width: 4px;
+}
+
 @media only screen and (max-width: 1129px) {
   header {
     display: flex;
