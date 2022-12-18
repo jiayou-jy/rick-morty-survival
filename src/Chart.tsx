@@ -41,7 +41,7 @@ const Chart: FunctionComponent<{ data: CharacterType[] }> = ({data}) => {
     [data]);
 
     return (
-        <svg className="chart" width={400} height={400} ref={container}/>
+        <svg className="chart" width={1000} height={600} ref={container}/>
     )
 };
 

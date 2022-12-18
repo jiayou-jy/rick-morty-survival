@@ -15,13 +15,27 @@ const SearchParams: FunctionComponent = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function requestCharacters() {
-    const res = await fetch(
-      `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}`
-    );
-    const json = (await res.json()) as APIResponse;
+    let url = "https://rickandmortyapi.com/api/character/";
+    let results = [] as Character[];
+    let lastResInfo;
+    if (name !== "all") {
+      url += `?name=${name}`;
+    }
 
-    setCharacters(json.results);
-    console.log(json.results);
+    if (status !== "any") {
+      url += (name === "all")? `?status=${status}` : `&?status=${status}`;
+    }
+    
+    do {
+      const res = await fetch(url);
+      const json = (await res.json()) as APIResponse;
+      results = results.concat(json.results);
+      lastResInfo = json.info;
+      url = lastResInfo.next;
+    } while (lastResInfo.next);
+    
+    console.log(results);
+    setCharacters(results);
   }
 
   return (
@@ -58,8 +72,8 @@ const SearchParams: FunctionComponent = () => {
         </label>
         <button>Submit</button>
       </form>
-      {/* <Chart data={characters} /> */}
-      <Results characters={characters} />
+      <Chart data={characters} />
+      {/* <Results characters={characters} /> */}
     </div>
   );
 };
