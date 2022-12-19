@@ -14,6 +14,7 @@ const SearchParams: FunctionComponent = () => {
   const [status, setStatus] = useState("alive");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [category, setCategory] = useState("species");
+  const [loading, setLoading] = useState(true);
   const cacheKey = `${name}_${status}`;
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const SearchParams: FunctionComponent = () => {
     
     localCache[cacheKey] = results || [];
     setCharacters(results);
+    setLoading(false);
   }
 
   return (
@@ -91,7 +93,7 @@ const SearchParams: FunctionComponent = () => {
             </button>
           ))}
       </div> */}
-      <Chart data={characters} category={category}/>
+      <Chart data={characters} loading={loading} category={category}/>
     </div>
   );
 };

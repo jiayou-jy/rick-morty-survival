@@ -10,12 +10,12 @@ interface Root{
     id?: string;
     species?: string;
     gender?: string;
-    image?: string;
+    image?: string | null;
 }
 
 type Node = HierarchyCircularNode<Root>;
 
-const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data, category}) => {
+const Chart: FunctionComponent<{ data: Character[], loading: boolean, category: string}> = ({data, loading, category}) => {
     const svgRef = useRef(null);
     const [width, setWidth] = useState(500);
     const [height, setHeight] = useState(500);
@@ -50,7 +50,7 @@ const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data,
             
         const patterns = svg.select("defs")
             .selectAll("pattern")
-            .data(nodes)
+            .data(nodes.filter(d => d.data.image))
             .attr("id", d => String(d.data.id))
             .attr("patternUnits", "objectBoundingBox")
             .attr("width", 1)
@@ -70,7 +70,7 @@ const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data,
             // .attr("r", d => d.r)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
-            .attr("fill", d => "url(#" + String(d.data.id) + ")")
+            .attr("fill", d => (d.data.image) ? "url(#" + String(d.data.id) + ")" : "#fff")
             .attr("stroke", d => getColor(String(d.data.species), groupName));
         
         bubbles.transition()
@@ -105,8 +105,11 @@ const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data,
                 .padding(4);
             return pack(rootNode).leaves();
         }
-
-    return (
+    
+    if (loading) {
+        return <h2>scanning...</h2>;
+    } else {
+        return (
         <svg className="chart" width={width} height={height} ref={svgRef}>
             <defs>
                 {data.map(d => (<pattern key={d.id} className="bg_img">
@@ -116,6 +119,8 @@ const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data,
             <g className="canvas"/>
         </svg>
     )
+    }
+    
 };
 
 export default Chart;
