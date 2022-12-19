@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/rick-morty-survival/static/css/main.2ed891e0.css",
+    "main.js": "/rick-morty-survival/static/js/main.5a969cf4.js",
+    "static/js/749.1f80f835.chunk.js": "/rick-morty-survival/static/js/749.1f80f835.chunk.js",
+    "static/js/787.62366e41.chunk.js": "/rick-morty-survival/static/js/787.62366e41.chunk.js",
+    "static/js/364.ee4344ef.chunk.js": "/rick-morty-survival/static/js/364.ee4344ef.chunk.js",
+    "index.html": "/rick-morty-survival/index.html",
+    "main.2ed891e0.css.map": "/rick-morty-survival/static/css/main.2ed891e0.css.map",
+    "main.5a969cf4.js.map": "/rick-morty-survival/static/js/main.5a969cf4.js.map",
+    "749.1f80f835.chunk.js.map": "/rick-morty-survival/static/js/749.1f80f835.chunk.js.map",
+    "787.62366e41.chunk.js.map": "/rick-morty-survival/static/js/787.62366e41.chunk.js.map",
+    "364.ee4344ef.chunk.js.map": "/rick-morty-survival/static/js/364.ee4344ef.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2ed891e0.css",
+    "static/js/main.5a969cf4.js"
+  ]
+}
