@@ -9,8 +9,14 @@ h1 {
 }
 
 h2 {
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
+}
+
+h3 {
+  font-size: 14px;
+  text-align: center;
+  margin: .25em;
 }
 
 .search-params form {
@@ -31,4 +37,26 @@ h2 {
 
 .bubble {
   stroke-width: 2px;
+}
+
+.chart-container {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.details {
+  width: 200px;
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 6px;
+}
+
+.details .image-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.details .image-container img {
+  width: 100%;
 }

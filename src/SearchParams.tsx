@@ -1,4 +1,5 @@
 import { FunctionComponent, useState, useEffect } from "react";
+import { useErrorHandler } from "react-error-boundary";
 import Chart from "./Chart";
 import { APIResponse, Character, Status } from "./APIResponsesTypes";
 
@@ -15,6 +16,7 @@ const SearchParams: FunctionComponent = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [category, setCategory] = useState("species");
   const [loading, setLoading] = useState(true);
+  const handleError = useErrorHandler();
   const cacheKey = `${name}_${status}`;
 
   useEffect(() => {
@@ -38,10 +40,16 @@ const SearchParams: FunctionComponent = () => {
     }
     do {
       const res = await fetch(url);
-      const json = (await res.json()) as APIResponse;
-      results = results.concat(json.results);
-      lastResInfo = json.info;
-      url = lastResInfo.next;
+      if (res.ok) {
+        const json = (await res.json()) as APIResponse;
+        results = results.concat(json.results);
+        lastResInfo = json.info;
+        url = lastResInfo.next;
+      } else {
+        return Promise.reject(res)
+          .catch(handleError);
+      }
+      
     } while (lastResInfo.next);
     
     localCache[cacheKey] = results || [];
@@ -54,6 +62,7 @@ const SearchParams: FunctionComponent = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          setLoading(true);
           requestCharacters();
         }}
       >
@@ -62,7 +71,7 @@ const SearchParams: FunctionComponent = () => {
           <input
             id="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
             placeholder="name"
           />
         </label>

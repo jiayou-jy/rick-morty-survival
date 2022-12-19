@@ -9,6 +9,11 @@ export interface Character {
   image: string;
 }
 
+export interface Location {
+  name: string;
+  url: string;
+}
+
 export interface Info {
   count: number;
   pages: number;
