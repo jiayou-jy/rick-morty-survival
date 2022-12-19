@@ -1,4 +1,4 @@
-export type Status = "alive" | "dead" | "any";
+export type Status = "alive" | "dead" | "unknown" | "any";
 
 export interface Character {
   id: number;

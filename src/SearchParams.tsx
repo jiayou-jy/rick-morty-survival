@@ -7,7 +7,7 @@ interface Cache {
 }
 
 const localCache = {} as Cache;
-const STATUS: Status[] = ["any", "alive", "dead"];
+const STATUS: Status[] = ["any", "alive", "dead", "unknown"];
 
 const SearchParams: FunctionComponent = () => {
   const [name, setName] = useState("all");
@@ -34,7 +34,7 @@ const SearchParams: FunctionComponent = () => {
     }
 
     if (status !== "any") {
-      url += (name === "all")? `?status=${status}` : `&?status=${status}`;
+      url += (name === "all")? `?status=${status}` : `&status=${status}`;
     }
     do {
       const res = await fetch(url);
@@ -45,6 +45,7 @@ const SearchParams: FunctionComponent = () => {
     } while (lastResInfo.next);
     
     localCache[cacheKey] = results || [];
+    console.log(localCache);
     setCharacters(results);
     setLoading(false);
   }
@@ -75,7 +76,12 @@ const SearchParams: FunctionComponent = () => {
             onBlur={(e) => setStatus(e.target.value)}
           >
             {STATUS.map((status) => (
-              <option key={status} value={status}>
+              <option 
+              key={status} 
+              value={status}
+              onChange={(e) => setStatus(status)}
+              onBlur={(e) => setStatus(status)}
+              >
                 {status}
               </option>
             ))}
