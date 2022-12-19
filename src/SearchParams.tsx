@@ -45,7 +45,6 @@ const SearchParams: FunctionComponent = () => {
     } while (lastResInfo.next);
     
     localCache[cacheKey] = results || [];
-    console.log(localCache);
     setCharacters(results);
     setLoading(false);
   }
@@ -87,7 +86,7 @@ const SearchParams: FunctionComponent = () => {
             ))}
           </select>
         </label>
-        <button>WUBBA LUBBA DUB-DUB</button>
+        <button>Get Schwifty!</button>
       </form>
       {/* <div className="categories">
         {CATEGORY.map((category) => (
