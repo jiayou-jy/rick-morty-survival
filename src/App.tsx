@@ -8,7 +8,7 @@ const App = () => {
       <StrictMode>
         <BrowserRouter>
           <header>
-            <Link to="/">Header</Link>
+            <h1>The Universe of Rick and Morty</h1>
           </header>
           <Routes>
             <Route path="/details/:id" element={<Details />} />

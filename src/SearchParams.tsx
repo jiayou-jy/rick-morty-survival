@@ -9,11 +9,13 @@ interface Cache {
 
 const localCache = {} as Cache;
 const STATUS: Status[] = ["any", "alive", "dead"];
+const CATEGORY: string[] = ["species", "gender"];
 
 const SearchParams: FunctionComponent = () => {
   const [name, setName] = useState("rick");
   const [status, setStatus] = useState("alive");
   const [characters, setCharacters] = useState<Character[]>([]);
+  const [category, setCategory] = useState("species");
   const cacheKey = `${name}_${status}`;
 
   useEffect(() => {
@@ -42,10 +44,8 @@ const SearchParams: FunctionComponent = () => {
       results = results.concat(json.results);
       lastResInfo = json.info;
       url = lastResInfo.next;
-      console.log("fetched page " + lastResInfo.pages);
     } while (lastResInfo.next);
     
-    console.log("done fetching");
     localCache[cacheKey] = results || [];
     setCharacters(results);
     console.log(localCache);
@@ -85,7 +85,17 @@ const SearchParams: FunctionComponent = () => {
         </label>
         <button>Submit</button>
       </form>
-      <Chart data={characters} />
+      <div className="categories">
+        {CATEGORY.map((category) => (
+          <button 
+            key={category} 
+            value={category}
+            onClick = {(e) => setCategory(category)}>
+              {category}
+            </button>
+          ))}
+      </div>
+      <Chart data={characters} category={category} name={name} />
       {/* <Results characters={characters} /> */}
     </div>
   );
