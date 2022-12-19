@@ -1,6 +1,5 @@
 import { FunctionComponent, useState, useEffect } from "react";
 import Chart from "./Chart";
-import Results from "./Results";
 import { APIResponse, Character, Status } from "./APIResponsesTypes";
 
 interface Cache {
@@ -9,10 +8,9 @@ interface Cache {
 
 const localCache = {} as Cache;
 const STATUS: Status[] = ["any", "alive", "dead"];
-const CATEGORY: string[] = ["species", "gender"];
 
 const SearchParams: FunctionComponent = () => {
-  const [name, setName] = useState("rick");
+  const [name, setName] = useState("all");
   const [status, setStatus] = useState("alive");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [category, setCategory] = useState("species");
@@ -37,7 +35,6 @@ const SearchParams: FunctionComponent = () => {
     if (status !== "any") {
       url += (name === "all")? `?status=${status}` : `&?status=${status}`;
     }
-    
     do {
       const res = await fetch(url);
       const json = (await res.json()) as APIResponse;
@@ -48,7 +45,6 @@ const SearchParams: FunctionComponent = () => {
     
     localCache[cacheKey] = results || [];
     setCharacters(results);
-    console.log(localCache);
   }
 
   return (
@@ -83,9 +79,9 @@ const SearchParams: FunctionComponent = () => {
             ))}
           </select>
         </label>
-        <button>Submit</button>
+        <button>WUBBA LUBBA DUB-DUB</button>
       </form>
-      <div className="categories">
+      {/* <div className="categories">
         {CATEGORY.map((category) => (
           <button 
             key={category} 
@@ -94,9 +90,8 @@ const SearchParams: FunctionComponent = () => {
               {category}
             </button>
           ))}
-      </div>
-      <Chart data={characters} category={category} name={name} />
-      {/* <Results characters={characters} /> */}
+      </div> */}
+      <Chart data={characters} category={category}/>
     </div>
   );
 };

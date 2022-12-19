@@ -10,65 +10,86 @@ interface Root{
     id?: string;
     species?: string;
     gender?: string;
-
+    image?: string;
 }
 
 type Node = HierarchyCircularNode<Root>;
 
-const Chart: FunctionComponent<{ data: Character[], category: string, name:string }> = ({data, category, name}) => {
-    const container = useRef(null);
+const Chart: FunctionComponent<{ data: Character[], category: string}> = ({data, category}) => {
+    const svgRef = useRef(null);
+    const [width, setWidth] = useState(500);
+    const [height, setHeight] = useState(500);
     
-    
-    useEffect( draw, [data]);
+    useEffect( draw, [data, width, height]);
+
+    useEffect(() => {
+        window.addEventListener("resize", sizeWindow);
+        return () => window.removeEventListener("resize", sizeWindow);
+    }, []);
+
+    function sizeWindow(){
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight - 100;
+        setWidth(newWidth);
+        setHeight(newHeight);
+    }
 
     function draw(){
-        if (!data || !container.current) return;
-        const svg = d3.select(container.current);
-        const width = +svg.attr("width");
-        const height = +svg.attr("height");
+        if (!data || data.length === 0 || !svgRef.current) return;
+        sizeWindow();
+        const svg = d3.select(svgRef.current);
 
         const grouped: Root[] = Array.from(d3.group(data, d => d.species), ([name, children]) => ({name, children}));
         const root: Root = ({
-            name: name,
+            name: "Root",
             children: grouped
             });
         const nodes = calculateNodes(root, width, height);
         
         const groupName = grouped.map(d => d.name);
-        function getColor(item: string) : string {
-            const color = d3.scaleOrdinal()
-            .domain(groupName)
-            .range(d3.schemeCategory10);
-
-            return String(color(item));
-        }
-
+            
         const patterns = svg.select("defs")
             .selectAll("pattern")
-            .data(data)
-            .attr("id", d => d.id)
+            .data(nodes)
+            .attr("id", d => String(d.data.id))
             .attr("patternUnits", "objectBoundingBox")
-            .attr("width", 40)
-            .attr("height", 40);
+            .attr("width", 1)
+            .attr("height", 1);
         
         patterns.select("image")
-            .attr("href", d => d.image)
+            .attr("href", d => String(d.data.image))
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", 40)
-            .attr("height", 40);
-
+            .attr("width", d => d.r * 2)
+            .attr("height", d => d.r * 2);
 
         const bubbles = d3.select(".canvas").selectAll("circle")
             .data(nodes)
             .join("circle")
             .attr("class", "bubble")
-            .attr("r", d => d.r)
-            .attr("fill", d => "url(#" + String(d.data.id) + ")")
-            .attr("stroke", d => getColor(String(d.data.species)))
-            // .transition()
+            // .attr("r", d => d.r)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
+            .attr("fill", d => "url(#" + String(d.data.id) + ")")
+            .attr("stroke", d => getColor(String(d.data.species), groupName));
+        
+        bubbles.transition()
+            .delay((d, i) => Math.random() * 500)
+            .duration(750)
+            .attrTween("r", d => tweenR(d.r));
+    }
+
+    function getColor(item: string, domain: string[]) : string {
+        const color = d3.scaleOrdinal()
+        .domain(domain)
+        .range(d3.schemeCategory10);
+
+        return String(color(item));
+    }
+
+    function tweenR(r: number){
+       const i = d3.interpolate(0, r);
+        return (t: number) => String(i(t));
     }
 
     function calculateNodes(
@@ -79,22 +100,20 @@ const Chart: FunctionComponent<{ data: Character[], category: string, name:strin
             const rootNode = d3.hierarchy(root)
                 .sum(d => 1);
 
-            console.log(rootNode);
-            
             const pack = d3.pack<Root>()
                 .size([width, height])
-                .padding(1);
+                .padding(4);
             return pack(rootNode).leaves();
         }
 
     return (
-        <svg className="chart" width={window.innerWidth} height={window.innerHeight} ref={container}>
+        <svg className="chart" width={width} height={height} ref={svgRef}>
             <defs>
                 {data.map(d => (<pattern key={d.id} className="bg_img">
                     <image />
                 </pattern>))}
             </defs>
-            <g className="canvas" transform="translate(20,20)" />
+            <g className="canvas"/>
         </svg>
     )
 };
